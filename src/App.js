@@ -31,7 +31,7 @@ export default function App() {
       try {
 
         setIsLoading(true);
-        const res = await fetch(`http://www.omdbapi.com/?apikey=661b087d&s=${query}`);
+        const res = await fetch(`https://www.omdbapi.com/?apikey=661b087d&s=${query}`);
         const data = await res.json();
         if (data.Response === "False") throw new Error(data.Error);
         console.log(data.Search);
@@ -176,7 +176,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
         setMovie({});
         setUserRating(0);
         setIsLoading(true);
-        const res = await fetch(`http://www.omdbapi.com/?apikey=661b087d&i=${selectedId}`)
+        const res = await fetch(`https://www.omdbapi.com/?apikey=661b087d&i=${selectedId}`)
         const data = await res.json();
         if (data.Response === "False") throw new Error(data.Error);
         setMovie(data);
