@@ -163,9 +163,24 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onAddWatched(watchedMovie);
   }
 
-  useEffect(function () {
-    async function getMovieDetails() {
-      try {
+  // useEffect(
+  //   function () {
+  //     async function getMovieDetails() {
+  //       setIsLoading(true);
+  //       const res = await fetch(
+  //         `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+  //       );
+  //       const data = await res.json();
+  //       setMovie(data);
+  //       setIsLoading(false);
+  //     }
+  //     getMovieDetails();
+  //   },
+  //   [selectedId]
+  // );
+  useEffect(
+    function () {
+      async function getMovieDetails() {
         setMovie({});
         setUserRating(0);
         setIsLoading(true);
@@ -177,20 +192,13 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
         });
         const data = res.data;
         if (data.Response === "False") throw new Error(data.Error);
-        console.log(data);
         setMovie(data);
-        console.log(movie);
-      }
-      catch (error) {
-        console.error(error.message);
-      }
-      finally {
         setIsLoading(false);
       }
-
-    }
-    getMovieDetails();
-  }, [selectedId]);
+      getMovieDetails();
+    },
+    [selectedId]
+  );
   return (
     <div className="details">
       {isLoading ? (
