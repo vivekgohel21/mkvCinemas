@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from 'axios';
 import StarRating from "./StarRating";
 
 
@@ -13,7 +12,6 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [error, setError] = useState("")
   const [selectedId, setSelectedId] = useState(null)
-  const APIKEY = "661b087d"
   // const searchQuery = "the wolf of"
 
   function handleSelectMovie(id) {
@@ -109,7 +107,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const [isLoading, setIsLoading] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
-  const APIKEY = "661b087d"
   let {
     Title: title,
     Year: year,
