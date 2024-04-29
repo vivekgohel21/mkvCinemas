@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
+import axios from "axios";
 
 
 const average = (arr) =>
@@ -29,10 +30,9 @@ export default function App() {
   useEffect(function () {
     async function fetchMovies() {
       try {
-
         setIsLoading(true);
-        const res = await fetch(`https://www.omdbapi.com/?apikey=661b087d&s=${query}`);
-        const data = await res.json();
+        const res = await axios.get(`https://www.omdbapi.com/?apikey=661b087d&s=${query}`);
+        const data = await res.data;
         if (data.Response === "False") throw new Error(data.Error);
         console.log(data.Search);
         setMovies(data.Search);
@@ -174,10 +174,10 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     function () {
       async function getMovieDetails() {
         setMovie({});
-        setUserRating(0);
+        // setUserRating(0);
         setIsLoading(true);
-        const res = await fetch(`https://www.omdbapi.com/?apikey=661b087d&i=${selectedId}`)
-        const data = await res.json();
+        const res = await axios.get(`https://www.omdbapi.com/?apikey=661b087d&i=${selectedId}`)
+        const data = await res.data;
         if (data.Response === "False") throw new Error(data.Error);
         setMovie(data);
         setIsLoading(false);
@@ -186,6 +186,11 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     },
     [selectedId]
   );
+  useEffect(
+    function () {
+      if (!title) return;
+      document.title = `${title}`;
+    }, [title]);
   return (
     <div className="details">
       {isLoading ? (
