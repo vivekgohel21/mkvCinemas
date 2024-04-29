@@ -51,8 +51,9 @@ export default function App() {
           if (error.message !== "canceled") {
             setError(error.message);
           }
-          setIsLoading(false);
+          setError("");
         }
+        setIsLoading(false);
       }
     }
     if (query.length < 4) {
