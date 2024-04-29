@@ -209,7 +209,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
         <>
           <header>
             <button className="btn-back" onClick={onCloseMovie}>
-              <i className="fa-solid fa-arrow-left" />
+              <i className="fa-solid fa-xmark" />
             </button>
             <img src={poster} alt={title} />
             <div className="details-overview">
@@ -320,11 +320,12 @@ function Main({ children }) {
 }
 
 function Box({ children }) {
-  const [isOpen, setIsOpen] = useState(true);
+  // const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="box">
-      <Button isOpen={isOpen} setIsOpen={setIsOpen} />
-      {isOpen && children}
+      {/* <Button isOpen={isOpen} setIsOpen={setIsOpen} /> */}
+      {/* {isOpen && children} */}
+      {children}
     </div>
   );
 }
@@ -457,17 +458,17 @@ function WatchedMovie({ movie }) {
   );
 }
 
-function Button({ isOpen, setIsOpen }) {
-  return (
-    <button
-      className="btn-toggle"
-      onClick={() => setIsOpen((open) => !open)}
-    >
-      {isOpen ? (
-        <i className="fa-solid fa-minus"></i>
-      ) : (
-        <i className="fa-solid fa-plus"></i>
-      )}
-    </button>
-  );
-}
+// function Button({ isOpen, setIsOpen }) {
+//   return (
+//     <button
+//       className="btn-toggle"
+//       onClick={() => setIsOpen((open) => !open)}
+//     >
+//       {isOpen ? (
+//         <i className="fa-solid fa-minus"></i>
+//       ) : (
+//         <i className="fa-solid fa-plus"></i>
+//       )}
+//     </button>
+//   );
+// }

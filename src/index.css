@@ -370,17 +370,18 @@ body {
 .btn-back {
   position: absolute;
   top: 0.6rem;
-  left: 0.6rem;
+  right: 0.6rem;
   height: 2.rem;
   aspect-ratio: 1;
   border-radius: 50%;
   border: none;
+  background: none;
   /* background-color: var(--color-text); */
   /* background-color: #fff; */
-  background-color: var(--color-background-900);
-  color: var(--color-text);
+  /* background-color: var(--color-background-900); */
+  color: var(--color-red);
   /* color: var(--color-background-500); */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+  /* box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8); */
   font-family: sans-serif;
   font-size: 2.3rem;
   font-weight: bold;
