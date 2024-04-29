@@ -27,11 +27,15 @@ export default function App() {
     setWatched([...watched, watchedMovie]);
   }
 
-  useEffect(function () {
+  useEffect(() => {
+    const controller = new AbortController();
     async function fetchMovies() {
+
       try {
         setIsLoading(true);
-        const res = await axios.get(`https://www.omdbapi.com/?apikey=661b087d&s=${query}`);
+        const res = await axios.get(`https://www.omdbapi.com/?apikey=661b087d&s=${query}`, {
+          signal: controller.signal,
+        });
         const data = await res.data;
         if (data.Response === "False") throw new Error(data.Error);
         console.log(data.Search);
@@ -39,37 +43,30 @@ export default function App() {
         setIsLoading(false);
         setError("");
       } catch (error) {
-        console.error(error.message);
-        setIsLoading(false);
-        setMovies([]);
-        setError(error.message);
+        if (error.name === 'AbortError') {
+          console.log('Request aborted:', error.message);
+        } else {
+          console.error(error.message);
+          setMovies([]);
+          if (error.message !== "canceled") {
+            setError(error.message);
+          }
+          setIsLoading(false);
+        }
       }
     }
-    // try {
-    //   setIsLoading(true);
-    //   const res = await fetch(`http://www.omdbapi.com/?apikey=${APIKEY}&s=${query}`);
-
-    //   if (!res.ok) {
-    //     throw new Error("Something went wrong!");
-    //   }
-
-    //   const data = await res.json();
-    //   console.log(data.Search);
-    //   setMovies(data.Search)
-    //   setIsLoading(false);
-    // } catch (err) {
-    //   console.error(err.message);
-    // } finally {
-    //   setIsLoading(false);
-    // }
     if (query.length < 4) {
       setMovies([]);
       setError("");
       return;
     }
     fetchMovies();
-
-  }, [query]);
+    return function () {
+      controller.abort();
+    }
+  },
+    [query]
+  );
   return (
     <>
       <NavBar>
@@ -155,41 +152,53 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
     onAddWatched(watchedMovie);
   }
 
-  // useEffect(
-  //   function () {
-  //     async function getMovieDetails() {
-  //       setIsLoading(true);
-  //       const res = await fetch(
-  //         `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
-  //       );
-  //       const data = await res.json();
-  //       setMovie(data);
-  //       setIsLoading(false);
-  //     }
-  //     getMovieDetails();
-  //   },
-  //   [selectedId]
-  // );
-  useEffect(
-    function () {
-      async function getMovieDetails() {
-        setMovie({});
-        // setUserRating(0);
-        setIsLoading(true);
-        const res = await axios.get(`https://www.omdbapi.com/?apikey=661b087d&i=${selectedId}`)
-        const data = await res.data;
-        if (data.Response === "False") throw new Error(data.Error);
+  useEffect(() => {
+    const { CancelToken } = axios;
+    const source = CancelToken.source();
+    async function getMovieDetails() {
+      setMovie({});
+      setIsLoading(true);
+
+      try {
+        const res = await axios.get(`https://www.omdbapi.com/?apikey=661b087d&i=${selectedId}`, {
+          cancelToken: source.token
+        });
+
+        const data = res.data;
+
+        if (data.Response === "False") {
+          throw new Error(data.Error);
+        }
+
         setMovie(data);
         setIsLoading(false);
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          console.log('Request canceled:', error.message);
+        } else {
+          console.error(error);
+        }
       }
-      getMovieDetails();
-    },
+    }
+    getMovieDetails();
+
+    return function () {
+      source.cancel("canceled");
+    }
+  },
     [selectedId]
   );
+
+
   useEffect(
     function () {
       if (!title) return;
       document.title = `${title}`;
+
+      return function () {
+        document.title = 'mkvCinemas';
+      }
+
     }, [title]);
   return (
     <div className="details">
