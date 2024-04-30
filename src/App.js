@@ -26,7 +26,9 @@ export default function App() {
   function handleAddWatched(watchedMovie) {
     setWatched([...watched, watchedMovie]);
   }
-
+  function handleDeleteWatchedMovie(id) {
+    setWatched(watched.filter((movie) => movie.imdbID !== id));
+  }
   useEffect(() => {
     const controller = new AbortController();
     async function fetchMovies() {
@@ -92,7 +94,7 @@ export default function App() {
         }
         <Box>
           <WatchedSummary watched={watched} />
-          <WatchedMoviesList watched={watched} />
+          <WatchedMoviesList watched={watched} onDeleteWatchedMovie={handleDeleteWatchedMovie} />
         </Box>
 
       </Main>
@@ -426,20 +428,24 @@ function WatchedSummary({ watched }) {
   );
 }
 
-function WatchedMoviesList({ watched }) {
+function WatchedMoviesList({ watched, onDeleteWatchedMovie }) {
 
   return (
     <ul className="list">
-      {watched.map((movie) => <WatchedMovie movie={movie} key={movie.imdbID} />)}
+      {watched.map((movie) => <WatchedMovie movie={movie} key={movie.imdbID} onDeleteWatchedMovie={onDeleteWatchedMovie} />)}
     </ul>
   );
 }
 
-function WatchedMovie({ movie }) {
+function WatchedMovie({ movie, onDeleteWatchedMovie }) {
+  function handleDelete() {
+    onDeleteWatchedMovie(movie.imdbID)
+  }
   return (
     <li>
       <img src={movie.poster} alt={`${movie.title} poster`} />
       <h3>{movie.title}</h3>
+
       <div>
         <p>
           <span>⭐️</span>
@@ -454,6 +460,9 @@ function WatchedMovie({ movie }) {
           <span>{movie.runtime}</span>
         </p>
       </div>
+      <button className="btn-delete" onClick={handleDelete}>
+        <i className="fa-solid fa-trash" />
+      </button>
     </li>
   );
 }
