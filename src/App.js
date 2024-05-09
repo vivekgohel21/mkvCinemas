@@ -11,6 +11,8 @@ import Search from "./components/Search";
 import Main from "./components/Main";
 import Box from "./components/Box";
 import NumResults from "./components/NumResults";
+import MovieContext from "./MovieContext";
+import WatchedMovieContext from "./WatchedMovieContext";
 
 export default function App() {
   const [movies, setMovies] = useState([]);
@@ -19,7 +21,6 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [error, setError] = useState("")
   const [selectedId, setSelectedId] = useState(null)
-  // const searchQuery = "the wolf of"
 
   function handleSelectMovie(id) {
     setSelectedId(id);
@@ -76,37 +77,51 @@ export default function App() {
   },
     [query]
   );
+
   return (
     <>
-      <NavBar>
-        <Search query={query} setQuery={setQuery} />
-        <NumResults movies={movies} />
-      </NavBar>
-      <Main>
-        <Box>
-          {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} onSelectMovie={handleSelectMovie} />}
-          {error && <ErrorMessage error={error} />}
-        </Box>
-        {selectedId &&
-          <Box>
-            <MovieDetails
-              selectedId={selectedId}
-              onCloseMovie={handleCloseMovie}
-              onAddWatched={handleAddWatched}
-              watched={watched}
-            />
-          </Box>
-        }
-        <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMoviesList
-            watched={watched}
-            onDeleteWatchedMovie={handleDeleteWatchedMovie}
-          />
-        </Box>
+      <MovieContext.Provider
+        value={{
+          movies: movies,
+          onSelectMovie: handleSelectMovie
+        }}>
 
-      </Main>
+        <NavBar>
+          <Search query={query} setQuery={setQuery} />
+          <NumResults />
+        </NavBar>
+        <Main>
+
+          <WatchedMovieContext.Provider value={{
+            watched: watched,
+            onDeleteWatchedMovie: handleDeleteWatchedMovie
+          }}>
+
+            <Box>
+              {isLoading && <Loader />}
+              {!isLoading && !error && <MovieList />}
+              {error && <ErrorMessage error={error} />}
+            </Box>
+            {selectedId &&
+              <Box>
+                <MovieDetails
+                  selectedId={selectedId}
+                  onCloseMovie={handleCloseMovie}
+                  onAddWatched={handleAddWatched}
+                  watched={watched}
+                />
+              </Box>
+            }
+            <Box>
+              <WatchedSummary />
+              <WatchedMoviesList />
+            </Box>
+
+          </WatchedMovieContext.Provider>
+
+        </Main>
+
+      </MovieContext.Provider>
     </>
   );
 }

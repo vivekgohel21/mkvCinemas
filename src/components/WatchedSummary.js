@@ -1,10 +1,14 @@
+import { useContext } from "react";
+import WatchedMovieContext from "../WatchedMovieContext";
 
-export default function WatchedSummary({ watched }) {
+export default function WatchedSummary() {
+    const { watched } = useContext(WatchedMovieContext)
+
     const average = (arr) => {
-        return arr.reduce((acc, cur) => acc + cur, 0) / arr.length;
+        return arr.reduce((acc, cur) => acc + cur / arr.length, 0);
     };
-    const avgImdbRating = average(watched.map((movie) => movie.imdbRating)).toFixed(1);
-    const avgUserRating = average(watched.map((movie) => movie.userRating)).toFixed(1);
+    const avgImdbRating = average(watched.map((movie) => Number(movie.imdbRating))).toFixed(1);
+    const avgUserRating = average(watched.map((movie) => Number(movie.userRating))).toFixed(1);
     const avgRuntime = averageRuntime(watched);
     function averageRuntime(movies) {
         const totalMinutes = movies.map(movie => {
@@ -46,15 +50,15 @@ export default function WatchedSummary({ watched }) {
                 </p>
                 <p>
                     <span>⭐️</span>
-                    <span>{avgImdbRating && '0'}</span>
+                    <span>{avgImdbRating}</span>
                 </p>
                 <p>
                     <span>🌟</span>
-                    <span>{avgUserRating && '0'}</span>
+                    <span>{avgUserRating}</span>
                 </p>
                 <p>
                     <span>⏳</span>
-                    <span>{avgRuntime && '0'}</span>
+                    <span>{avgRuntime || '0'}</span>
                 </p>
             </div>
         </div>

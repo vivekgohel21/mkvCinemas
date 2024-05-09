@@ -10,7 +10,18 @@ export default function MovieDetails({ selectedId, onCloseMovie, onAddWatched, w
     const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
     const watchedUserRating = watched.find((movie) => movie.imdbID === selectedId)?.userRating;
     let {
-        Title: title, Year: year, Genre: genre, Runtime: runtime, Poster: poster, Plot: plot, imdbRating, Country: country, Actors: actors, Director: director, Released: releaseDate, Ratings: ratings, Language: language
+        Title: title,
+        Year: year,
+        Genre: genre,
+        Runtime: runtime,
+        Poster: poster,
+        Plot: plot, imdbRating,
+        Country: country,
+        Actors: actors,
+        Director: director,
+        Released: releaseDate,
+        Ratings: ratings,
+        Language: language
     } = movie;
     genre = genre?.replaceAll(", ", "/");
     runtime = convertToHoursAndMinutes(runtime);
@@ -39,8 +50,8 @@ export default function MovieDetails({ selectedId, onCloseMovie, onAddWatched, w
             poster,
             runtime,
             imdbID: selectedId,
-            userRating: userRating || null,
-            imdbRating
+            userRating: Number(userRating),
+            imdbRating: Number(imdbRating)
         };
         onAddWatched(watchedMovie);
     }
@@ -114,7 +125,12 @@ export default function MovieDetails({ selectedId, onCloseMovie, onAddWatched, w
                         {ratings?.map((rating) => <>
                             <div className="rating-container">
                                 <div className="rating-text">
-                                    <img className="rating-img" src={process.env.PUBLIC_URL + '/' + rating.Source + '.png'} alt={rating.value} style={{ width: 30 }} />
+                                    <img
+                                        className="rating-img"
+                                        src={process.env.PUBLIC_URL + '/' + rating.Source + '.png'}
+                                        alt={rating.value}
+                                        style={{ width: 30 }}
+                                    />
                                     <span>{rating.Source === "Internet Movie Database" ? "IMDb" : rating.Source}</span>
                                 </div>
                                 <div className="rating-value">{rating.Value}</div>
@@ -122,7 +138,6 @@ export default function MovieDetails({ selectedId, onCloseMovie, onAddWatched, w
                         </>
                         )}
                         <div className="rating">
-
                             {!isWatched ? (
                                 <>
                                     <StarRating maxRating={10} size={24} onSetRating={setUserRating} />
